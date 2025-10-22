@@ -39,5 +39,3 @@ function operate(operatorSymbol, a, b) {
         return null;
     }
 }
-
-console.log(operate('+', 1, 2))

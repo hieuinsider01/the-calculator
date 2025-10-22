@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
     <title>Document</title>
     <script src="main.js" defer></script>
 </head>
@@ -12,28 +12,35 @@
     <div class="container">
         <!-- Display -->
         <div class="display-screen">
-
+            <div class="display-area">0</div>
+            <button class="system-btn" id="clear-btn" data-value="clear">Clear</button>
         </div>
-        <!-- System button -->
-        <button class="system-btn" id="clear-btn">Clear</button>
-        <!-- Digit button -->
-        <button class="digit-btn" data-value="1">1</button>
-        <button class="digit-btn" data-value="2">2</button>
-        <button class="digit-btn" data-value="3">3</button>
-        <button class="digit-btn" data-value="4">4</button>
-        <button class="digit-btn" data-value="5">5</button>
-        <button class="digit-btn" data-value="6">6</button>
-        <button class="digit-btn" data-value="7">7</button>
-        <button class="digit-btn" data-value="8">8</button>
-        <button class="digit-btn" data-value="9">9</button>
-        <button class="digit-btn" data-value="0">0</button>
-        <button class="digit-btn" data-value=".">.</button>
-        <!-- Operator button -->
-        <button class="operator-btn" id="equal">=</button>
-        <button class="operator-btn" id="plus">+</button>
-        <button class="operator-btn" id="minus">-</button>
-        <button class="operator-btn" id="multiply">x</button>
-        <button class="operator-btn" id="divide">/</button>
+        <div class="button-rows">
+            <div class="button-row-1">
+                <button class="operator-btn" data-value="+">+</button>
+                <button class="operator-btn" data-value="-">-</button>
+                <button class="operator-btn" data-value="*">x</button>
+                <button class="operator-btn" data-value="/">/</button>
+            </div>       
+            <div class="button-row-2">
+                <button class="digit-btn" data-value="7">7</button>
+                <button class="digit-btn" data-value="8">8</button>
+                <button class="digit-btn" data-value="9">9</button>
+                <button class="digit-btn" data-value="0">0</button>
+            </div>       
+            <div class="button-row-3">
+                <button class="digit-btn" data-value="4">4</button>
+                <button class="digit-btn" data-value="5">5</button>
+                <button class="digit-btn" data-value="6">6</button>
+                <button class="digit-btn" data-value=".">.</button>
+            </div>       
+            <div class="button-row-4">
+                <button class="digit-btn" data-value="1">1</button>
+                <button class="digit-btn" data-value="2">2</button>
+                <button class="digit-btn" data-value="3">3</button>
+                <button class="operator-btn" id="equal">=</button>
+            </div>       
+        </div>
     </div>
 </body>
 </html>
