@@ -49,5 +49,10 @@
     width: 120px;
     height: 40px;
     border: none;
-    border-radius: 5px;
+    border-radius: 5px;   
+}
+
+.digit-btn:hover, .operator-btn:hover, #clear-btn:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.1);
 }

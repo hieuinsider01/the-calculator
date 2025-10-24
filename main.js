@@ -39,24 +39,24 @@ function operate(operatorSymbol, a, b) {
         return null;
     }
 }
-
-// Function to handle input digits
-function handleInputDigit(value) {
-    if (calculatorState.waitingForSecondOperand) {
-        calculatorState.displayValue = value;
-        calculatorState.waitingForSecondOperand = false;
-    }
-    console.log("Gia tri da bam: " + value);
-}
 // Function to setup event
 function setupEventListeners() {
+    // Event listener for digit
     const digitButtons = document.querySelectorAll('.digit-btn');
     digitButtons.forEach((button) => {
         button.addEventListener('click', () => {
             const digitValue = button.dataset.value;
             handleInputDigit(digitValue);
-        })
-    })
+        });
+    });
+    // Event listener for operator
+    const operatorButtons = document.querySelectorAll('.operator-btn');
+    operatorButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const operatorValue = button.dataset.value;
+            handleInputOperator(operatorValue);
+        });
+    });
 }
 setupEventListeners();
 // Update display
@@ -64,3 +64,17 @@ function updateDisplay() {
     document.getElementById('current-display').textContent = calculatorState.displayValue;
 }
 updateDisplay();
+// Function to handle input digits
+function handleInputDigit(value) {
+    // Guard clause
+    if (value === '.' && calculatorState.displayValue.includes('.')) {
+        return;
+    }
+    if (calculatorState.waitingForSecondOperand === true) {
+        calculatorState.displayValue = value;
+        calculatorState.waitingForSecondOperand = false;
+    } else {
+        calculatorState.displayValue === '0' ? calculatorState.displayValue = value : calculatorState.displayValue += value;
+    }
+    updateDisplay();
+}
