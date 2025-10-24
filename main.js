@@ -1,80 +1,180 @@
-// Create state object and operate function
-const calculatorState = {
-    displayValue: '0',
-    firstOperand: null,
-    waitingForSecondOperand: false,
-    operator: null,
-}
-function add(a, b) {
-    return a + b;
-}
-function subtract(a, b) {
-    return a - b;
-}
-function multiply(a, b) {
-    return a * b;
-}
-function divide(a, b) {
-    if (b === 0) {
-        return "Cannot divide by zero";
-    } else {
-        return a / b;
-    }
-}
-// Create operator object
-const operator = {
-    '+': add,
-    '-': subtract,
-    '*': multiply,
-    '/': divide,
+// Minimal, robust calculator logic with keyboard support
+
+const displayEl = document.getElementById('display');
+
+const state = {
+  displayValue: '0',
+  firstOperand: null,
+  operator: null,
+  waitingForSecondOperand: false,
 };
-// Operate Function
-function operate(operatorSymbol, a, b) {
-    a = Number(a);
-    b = Number(b);
-    const operationFunction = operator[operatorSymbol];
-    if (operationFunction) {
-        return operationFunction(a, b);
-    } else {
-        return null;
-    }
-}
-// Function to setup event
-function setupEventListeners() {
-    // Event listener for digit
-    const digitButtons = document.querySelectorAll('.digit-btn');
-    digitButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-            const digitValue = button.dataset.value;
-            handleInputDigit(digitValue);
-        });
-    });
-    // Event listener for operator
-    const operatorButtons = document.querySelectorAll('.operator-btn');
-    operatorButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-            const operatorValue = button.dataset.value;
-            handleInputOperator(operatorValue);
-        });
-    });
-}
-setupEventListeners();
-// Update display
+
 function updateDisplay() {
-    document.getElementById('current-display').textContent = calculatorState.displayValue;
+  // trim long numbers for UI
+  const txt = String(state.displayValue);
+  displayEl.textContent = txt;
 }
+
+function inputDigit(d) {
+  if (state.waitingForSecondOperand) {
+    state.displayValue = d === '.' ? '0.' : d;
+    state.waitingForSecondOperand = false;
+  } else {
+    if (d === '.' && state.displayValue.includes('.')) return;
+    state.displayValue = state.displayValue === '0' && d !== '.' ? d : state.displayValue + d;
+  }
+  updateDisplay();
+}
+
+function handleOperator(nextOp) {
+  const inputValue = parseFloat(state.displayValue);
+  if (state.operator && state.waitingForSecondOperand) {
+    state.operator = nextOp;
+    return;
+  }
+
+  if (state.firstOperand == null && !Number.isNaN(inputValue)) {
+    state.firstOperand = inputValue;
+  } else if (state.operator) {
+    const result = operate(state.operator, state.firstOperand, inputValue);
+    if (result === 'Error') {
+      state.displayValue = 'Error';
+      state.firstOperand = null;
+      state.operator = null;
+      state.waitingForSecondOperand = false;
+      updateDisplay();
+      return;
+    }
+    state.displayValue = formatNumber(result);
+    state.firstOperand = parseFloat(state.displayValue);
+  }
+
+  state.waitingForSecondOperand = true;
+  state.operator = nextOp;
+  updateDisplay();
+}
+
+function handleEquals() {
+  if (!state.operator || state.waitingForSecondOperand) return;
+  const second = parseFloat(state.displayValue);
+  const result = operate(state.operator, state.firstOperand, second);
+  if (result === 'Error') {
+    state.displayValue = 'Error';
+  } else {
+    state.displayValue = formatNumber(result);
+    state.firstOperand = parseFloat(state.displayValue);
+  }
+  state.operator = null;
+  state.waitingForSecondOperand = false;
+  updateDisplay();
+}
+
+function clearAll() {
+  state.displayValue = '0';
+  state.firstOperand = null;
+  state.operator = null;
+  state.waitingForSecondOperand = false;
+  updateDisplay();
+}
+
+function backspace() {
+  if (state.waitingForSecondOperand) return;
+  if (state.displayValue.length <= 1 || (state.displayValue.length === 2 && state.displayValue.startsWith('-'))) {
+    state.displayValue = '0';
+  } else {
+    state.displayValue = state.displayValue.slice(0, -1);
+  }
+  updateDisplay();
+}
+
+function toggleSign() {
+  if (state.displayValue === '0') return;
+  if (state.displayValue.startsWith('-')) state.displayValue = state.displayValue.slice(1);
+  else state.displayValue = '-' + state.displayValue;
+  updateDisplay();
+}
+
+function percent() {
+  const val = parseFloat(state.displayValue);
+  state.displayValue = formatNumber(val / 100);
+  updateDisplay();
+}
+
+function operate(op, a, b) {
+  if (!isFinite(a) || !isFinite(b)) return 'Error';
+  switch (op) {
+    case '+': return a + b;
+    case '-': return a - b;
+    case '*': return a * b;
+    case '/':
+      if (b === 0) return 'Error';
+      return a / b;
+    default: return b;
+  }
+}
+
+function formatNumber(n) {
+  if (!isFinite(n)) return 'Error';
+  // limit to 10 decimal places, remove trailing zeros
+  const rounded = Math.round((n + Number.EPSILON) * 1e10) / 1e10;
+  return String(rounded).replace(/(?:\.0+|(\.\d+?)0+)$/, '$1');
+}
+
+/* UI wiring */
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const b = e.currentTarget;
+    if (b.classList.contains('num')) {
+      inputDigit(b.dataset.value);
+      return;
+    }
+    if (b.classList.contains('op')) {
+      handleOperator(b.dataset.op);
+      return;
+    }
+    // system buttons
+    const action = b.dataset.action;
+    if (action === 'clear') clearAll();
+    else if (action === 'backspace') backspace();
+    else if (action === 'toggle-sign') toggleSign();
+    else if (action === 'percent') percent();
+    else if (action === 'equals') handleEquals();
+  });
+});
+
+/* Keyboard support */
+window.addEventListener('keydown', (e) => {
+  const k = e.key;
+  if ((/^[0-9]$/).test(k)) {
+    inputDigit(k);
+    return;
+  }
+  if (k === '.') {
+    inputDigit('.');
+    return;
+  }
+  if (k === '+' || k === '-' || k === '*' || k === '/') {
+    handleOperator(k);
+    return;
+  }
+  if (k === 'Enter' || k === '=') {
+    e.preventDefault();
+    handleEquals();
+    return;
+  }
+  if (k === 'Backspace') {
+    backspace();
+    return;
+  }
+  if (k === 'Escape' || k.toLowerCase() === 'c') {
+    clearAll();
+    return;
+  }
+  if (k === '%') {
+    percent();
+    return;
+  }
+});
+
+/* initialize */
 updateDisplay();
-// Function to handle input digits
-function handleInputDigit(value) {
-    // Guard clause
-    if (value === '.' && calculatorState.displayValue.includes('.')) {
-        return;
-    }
-    if (calculatorState.waitingForSecondOperand === true) {
-        calculatorState.displayValue = value;
-        calculatorState.waitingForSecondOperand = false;
-    } else {
-        calculatorState.displayValue === '0' ? calculatorState.displayValue = value : calculatorState.displayValue += value;
-    }
-    updateDisplay();
-}

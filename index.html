@@ -1,46 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Document</title>
-    <script src="main.js" defer></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Beautiful Calculator</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="main.js" defer></script>
 </head>
 <body>
-    <h1>The TOP's Calulator</h1>
-    <div class="container">
-        <!-- Display -->
-        <div class="display-screen">
-            <div class="display-area" id="current-display">0</div>
-            <button class="system-btn" id="clear-btn" data-value="clear">Clear</button>
-        </div>
-        <div class="button-rows">
-            <div class="button-row-1">
-                <button class="operator-btn" data-value="+">+</button>
-                <button class="operator-btn" data-value="-">-</button>
-                <button class="operator-btn" data-value="*">x</button>
-                <button class="operator-btn" data-value="/">/</button>
-            </div>       
-            <div class="button-row-2">
-                <button class="digit-btn" data-value="7">7</button>
-                <button class="digit-btn" data-value="8">8</button>
-                <button class="digit-btn" data-value="9">9</button>
-                <button class="digit-btn" data-value="0">0</button>
-            </div>       
-            <div class="button-row-3">
-                <button class="digit-btn" data-value="4">4</button>
-                <button class="digit-btn" data-value="5">5</button>
-                <button class="digit-btn" data-value="6">6</button>
-                <button class="digit-btn" data-value=".">.</button>
-            </div>       
-            <div class="button-row-4">
-                <button class="digit-btn" data-value="1">1</button>
-                <button class="digit-btn" data-value="2">2</button>
-                <button class="digit-btn" data-value="3">3</button>
-                <button class="system-btn" id="equal">=</button>
-            </div>       
-        </div>
+  <div class="wrapper">
+    <div class="calculator">
+      <header class="calc-header">
+        <h1 class="title">The TOP's Calculator</h1>
+      </header>
+
+      <section class="display-area" id="display" aria-live="polite">0</section>
+
+      <div class="controls">
+        <button class="btn sys" data-action="clear">C</button>
+        <button class="btn sys" data-action="backspace">⌫</button>
+        <button class="btn sys" data-action="toggle-sign">±</button>
+        <button class="btn op" data-op="/">÷</button>
+
+        <button class="btn num" data-value="7">7</button>
+        <button class="btn num" data-value="8">8</button>
+        <button class="btn num" data-value="9">9</button>
+        <button class="btn op" data-op="*">×</button>
+
+        <button class="btn num" data-value="4">4</button>
+        <button class="btn num" data-value="5">5</button>
+        <button class="btn num" data-value="6">6</button>
+        <button class="btn op" data-op="-">−</button>
+
+        <button class="btn num" data-value="1">1</button>
+        <button class="btn num" data-value="2">2</button>
+        <button class="btn num" data-value="3">3</button>
+        <button class="btn op" data-op="+">+</button>
+
+        <button class="btn num zero" data-value="0">0</button>
+        <button class="btn num" data-value=".">.</button>
+        <button class="btn sys" data-action="percent">%</button>
+        <button class="btn eq" data-action="equals">=</button>
+      </div>
+
+      <footer class="footer">Keyboard: 0-9 . + - * / Enter = Backspace Esc</footer>
     </div>
+  </div>
 </body>
 </html>
